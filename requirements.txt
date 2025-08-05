@@ -1,0 +1,10 @@
+pandas
+numpy
+matplotlib
+opencv-python
+scikit-learn
+librosa
+ffmpeg-python
+seaborn 
+umap
+scenedetect
