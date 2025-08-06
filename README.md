@@ -2,7 +2,7 @@
 
 Uma análise visual e sonora do clássico filme **In the Mood for Love** (2000), de Wong Kar-Wai. O projeto combina técnicas de visão computacional e ciência de dados para agrupar cenas por similaridade, destacando a cinematografia nostálgica e melancólica do diretor. 
 
-<img src="https://film-grab.com/2013/03/09/in-the-mood-for-love/#bwg971/60070" width="400" alt="Scene from movie In the Mood for Love (2000)">
+<img src="movie_banner.jpg" width="90%" alt="Scene from movie In the Mood for Love (2000)">
 
 ---
 
