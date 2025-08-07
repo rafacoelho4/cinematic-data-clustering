@@ -7,13 +7,13 @@ from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 import umap
 
-def clustering(video_name="inthemood.mp4", n_clusters=6):
+def clustering(video_name="../data/snippet.mp4", n_clusters=6):
     # 2. Carregar DataFrame com features já extraídas:
     #    Suponha que df_shots contenha columns:
     #    ['shot_id','start','end','duration',
     #     'flow_mag_mean','rms_mean','silence_ratio','hue_mean','sat_mean', ...]
 
-    df = pd.read_csv(f'{video_name}.csv')
+    df = pd.read_csv(f'../data/{video_name}.csv')
 
     # 3. Escolher apenas as colunas de features para clustering
     feature_cols = ['rms_mean', 'rms_std', 'silence_ratio', 'hue_mean', 'hue_var',

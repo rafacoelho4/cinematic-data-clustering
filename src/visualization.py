@@ -2,33 +2,51 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Image related 
-def plot_hue_saturation(color_feats):
-    # Gráfico 1: distribuição dos valores de Hue médio nos shots
-    plt.figure(figsize=(16,6))
-    plt.subplot(1,2,1)
+def plot_color_features(color_feats):
+    plt.figure(figsize=(18, 10))
+    
+    # --------------------------------------------
+    # Row 1: HSV Distributions (Hue, Saturation, Value)
+    # --------------------------------------------
+    plt.subplot(2, 3, 1)
     sns.histplot(color_feats['hue_mean'], bins=30, kde=True, color='darkred')
-    plt.title("Distribuição de Hue médio por shot")
-    plt.xlabel("Hue médio (0 a 180)")
-    plt.ylabel("Número de shots")
-
-    # Gráfico 2: distribuição da Saturação média
-    plt.subplot(1,2,2)
+    plt.title("Hue Mean Distribution")
+    plt.xlabel("Hue (0-180)")
+    # X-axis: Hue values (0° to 180°) in OpenCV’s HSV scale, where:
+    # 0° = Red, 30° = Yellow, 60° = Green, 90° = Cyan, 120° = Blue, 150° = Magenta, 180° = Red again.
+    
+    plt.subplot(2, 3, 2)
     sns.histplot(color_feats['sat_mean'], bins=30, kde=True, color='goldenrod')
-    plt.title("Distribuição de Saturação média por shot")
-    plt.xlabel("Saturação média (0 a 255)")
-    plt.ylabel("Número de shots")
-    plt.tight_layout()
-    plt.show()
+    plt.title("Saturation Mean Distribution")
+    plt.xlabel("Saturation (0-255)")
+    
+    plt.subplot(2, 3, 3)
+    sns.histplot(color_feats['val_mean'], bins=30, kde=True, color='black')
+    plt.title("Brightness Mean Distribution")
+    plt.xlabel("Brightness (0-255)")
+    
+    # --------------------------------------------
+    # Row 2: RGB Distributions and Key Relationships
+    # --------------------------------------------
+    plt.subplot(2, 3, 4)
+    sns.kdeplot(data=color_feats[['r_mean', 'g_mean', 'b_mean']], 
+                palette=['red', 'green', 'blue'], 
+                fill=True, alpha=0.3)
+    plt.title("RGB Channel Intensity Distribution")
+    plt.xlabel("Intensity (0-255)")
 
-    # Gráfico 3: scatter Hue vs Saturação
-    plt.figure(figsize=(6,6))
-    plt.scatter(color_feats['hue_mean'], color_feats['sat_mean'], c=color_feats['shot_id'], cmap='winter', s=60)
-    plt.colorbar(label='shot_id')
-    plt.xlabel('Hue médio')
-    plt.ylabel('Saturação média')
-    plt.title('Hue × Saturação por shot')
-    plt.grid(False)
+    # RGB means boxplot 
+    plt.subplot(2, 3, 5)
+    sns.boxplot(data=color_feats[['r_mean', 'g_mean', 'b_mean']],
+                palette=['red', 'green', 'blue'])
+    plt.title("RGB Channel Means")
+    plt.ylabel("Intensity (0-255)")
+
+    # Leave the 6th subplot empty or remove it
+    plt.subplot(2, 3, 6)
+    plt.axis('off') # Hide empty subplot
+    
+    plt.tight_layout()
     plt.show()
 
 # Audio related 

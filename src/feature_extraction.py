@@ -9,6 +9,10 @@ import cv2
 def extract_frame_mid(shot_id, time, video_name, input_path='../data/snippet.wav'):
     
     output = f'../data/frames/{video_name[:5]}_{shot_id:03d}_{time:.3f}.jpg'
+    # Skip extraction if file already exists
+    if os.path.exists(output):
+        return output
+    
     try:
         (ffmpeg
         .input(input_path, ss=time)
@@ -20,60 +24,89 @@ def extract_frame_mid(shot_id, time, video_name, input_path='../data/snippet.wav
 
     return output
 
-def extract_frames(video_file, df_shots):
-
+def extract_frames(video_file, df):
     video_name = video_file[:-4]
     os.makedirs('../data/frames', exist_ok=True)
-    def extract_frame_mid_apply(row, input_path=video_file):
-        shot_id = int(row.shot_id)
-        time = (row.start + row.end) / 2
-        return extract_frame_mid(shot_id, time, video_name, input_path=f"../data/{video_file}")
+    
+    df['frame_path'] = df.apply(lambda row: extract_frame_mid(
+        int(row.shot_id),
+        (row.start + row.end) / 2,
+        video_name,
+        f"../data/{video_file}"
+    ), axis=1)
 
-    df_shots['frame_path'] = df_shots.apply(extract_frame_mid_apply, axis=1)
+    return df
 
-    return df_shots
+def compute_hsv_hist_stats(frame_path):
+    img = cv2.imread(frame_path)
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    h, s, v = cv2.split(hsv)
+    
+    # Conversão para RGB (para os novos histogramas)
+    rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    r, g, b = cv2.split(rgb)
+    
+    # Cálculo dos histogramas HSV (existente)
+    hist_h = cv2.calcHist([h], [0], None, [180], [0, 180])
+    hist_s = cv2.calcHist([s], [0], None, [256], [0, 256])
+    hist_v = cv2.calcHist([v], [0], None, [256], [0, 256])  
+    
+    # Cálculo dos histogramas RGB (novos)
+    hist_r = cv2.calcHist([r], [0], None, [256], [0, 256])
+    hist_g = cv2.calcHist([g], [0], None, [256], [0, 256])
+    hist_b = cv2.calcHist([b], [0], None, [256], [0, 256])
+    
+    # Normalização
+    hist_h = hist_h.flatten() / hist_h.sum() 
+    hist_s = hist_s.flatten() / hist_s.sum() 
+    hist_v = hist_v.flatten() / hist_v.sum() 
+    hist_r = hist_r.flatten() / hist_r.sum() 
+    hist_g = hist_g.flatten() / hist_g.sum() 
+    hist_b = hist_b.flatten() / hist_b.sum() 
+
+    return {
+        # Métricas HSV 
+        'hue_mean': float(np.sum(np.arange(180) * hist_h)), # hue 
+        'hue_var': float(np.sum(((np.arange(180) - np.sum(np.arange(180) * hist_h))**2) * hist_h)),
+        'sat_mean': float(np.sum(np.arange(256) * hist_s)), # saturation 
+        'sat_var': float(np.sum(((np.arange(256) - np.sum(np.arange(256) * hist_s))**2) * hist_s)),
+        'val_mean': float(np.sum(np.arange(256) * hist_v)),  # value (brightness) 
+        'val_var': float(np.sum(((np.arange(256) - np.sum(np.arange(256) * hist_v))**2) * hist_v)), 
+        
+        # Métricas RGB 
+        'r_mean': float(np.sum(np.arange(256) * hist_r)),  # Média do canal Vermelho
+        'r_var': float(np.sum(((np.arange(256) - np.sum(np.arange(256) * hist_r))**2) * hist_r)),  # Variância do Vermelho
+        'g_mean': float(np.sum(np.arange(256) * hist_g)),  # Média do canal Verde
+        'g_var': float(np.sum(((np.arange(256) - np.sum(np.arange(256) * hist_g))**2) * hist_g)),  # Variância do Verde
+        'b_mean': float(np.sum(np.arange(256) * hist_b)),  # Média do canal Azul
+        'b_var': float(np.sum(((np.arange(256) - np.sum(np.arange(256) * hist_b))**2) * hist_b)),  # Variância do Azul
+    }
 
 # Image features 
-def image_features(df_shots):
-
-    def compute_hsv_hist_stats(frame_path):
-        img = cv2.imread(frame_path)
-        hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        h, s, v = cv2.split(hsv)
-
-        hist_h = cv2.calcHist([h], [0], None, [180], [0, 180])
-        hist_s = cv2.calcHist([s], [0], None, [256], [0, 256])
-        hist_h = hist_h.flatten() / hist_h.sum()
-        hist_s = hist_s.flatten() / hist_s.sum()
-
-        return {
-            'hue_mean': float(np.sum(np.arange(180) * hist_h)),
-            'hue_var': float(np.sum(((np.arange(180) - np.sum(np.arange(180) * hist_h))**2) * hist_h)),
-            'sat_mean': float(np.sum(np.arange(256) * hist_s)),
-            'sat_var': float(np.sum(((np.arange(256) - np.sum(np.arange(256) * hist_s))**2) * hist_s)),
-            # opcional: entropia ou modas
-        }
-
+def image_features(df):
     color_feats = pd.DataFrame([
         dict(shot_id=row.shot_id, **compute_hsv_hist_stats(row.frame_path))
-        for _, row in df_shots.iterrows()
+        for _, row in df.iterrows()
     ])
-    # print(color_feats)
-    df_shots = df_shots.merge(color_feats, on='shot_id')
-    
-    return df_shots
+    df = color_feats.merge(df, on='shot_id')
+    return df
         
 # Audio features 
 def save_wav(video_file):
     video_name = video_file[:-4]
-    try:
-        (ffmpeg
-        .input(f"../data/{video_file}")
-        .output(f'../data/{video_name}.wav', acodec='pcm_s16le', ac=1, ar=22050)
-        .overwrite_output()
-        .run(quiet=True))
-    except ffmpeg.Error as e:
-        print("FFmpeg error:", e.stderr.decode('utf8'))
+    
+    file_path = f'../data/{video_name}.wav'
+    if(os.path.exists(file_path)): 
+        return 
+    else:
+        try:
+            (ffmpeg
+            .input(f"../data/{video_file}")
+            .output(f'../data/{video_name}.wav', acodec='pcm_s16le', ac=1, ar=22050)
+            .overwrite_output()
+            .run(quiet=True))
+        except ffmpeg.Error as e:
+            print("FFmpeg error:", e.stderr.decode('utf8'))
 
 def audio_features(video_file, df):
 

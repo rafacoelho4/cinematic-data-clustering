@@ -33,21 +33,22 @@ def detect_scene(video_file):
 # Gera um video com menor resolução para acelerar detecção de cenas 
 def detect_scene_low_resolution(video_file):
 
-    # Fazer o seguinte:
-    # Se existir arquivo snippet_lowres.mp4, usar ele para detectar cena 
-    # Se não existir, gravar 
-    
-    video_name = video_file[:-4]
-    # Gera um vídeo a 15 fps e 360 px de altura (largura ajustada automaticamente)
-    try:
-        (ffmpeg
-        .input(f'../data/{video_file}')
-        .filter('fps', fps=15)
-        .filter('scale', -2, 360)
-        .output(f'../data/{video_name}_lowres.mp4')
-        .overwrite_output()
-        .run(quiet=True))
-    except ffmpeg.Error as e:
-        print("FFmpeg error:", e.stderr.decode('utf8'))
+    video_name = video_file[:-4] 
+    # Verifica se ja existe video de menor resolução. Se sim, usar para detectar as cenas
+    file_path = f'../data/{video_name}_lowres.mp4' 
+    if(os.path.exists(file_path)): 
+        return detect_scene(f'{video_name}_lowres.mp4') 
+    else: 
+        # Se não, gera um vídeo a 15 fps e 360 px de altura (largura ajustada automaticamente) 
+        try:
+            (ffmpeg
+            .input(f'../data/{video_file}')
+            .filter('fps', fps=15)
+            .filter('scale', -2, 360)
+            .output(f'../data/{video_name}_lowres.mp4')
+            .overwrite_output()
+            .run(quiet=True))
+        except ffmpeg.Error as e:
+            print("FFmpeg error:", e.stderr.decode('utf8'))
 
-    return detect_scene(f'{video_name}_lowres.mp4')
+        return detect_scene(f'{video_name}_lowres.mp4')
