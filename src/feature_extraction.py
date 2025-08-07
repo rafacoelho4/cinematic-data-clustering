@@ -3,15 +3,19 @@ import librosa
 import pandas as pd 
 import numpy as np 
 
+def save_wav(video_file, video_name):
+    try:
+        (ffmpeg
+        .input(f"../data/{video_file}")
+        .output(f'../data/{video_name}.wav', acodec='pcm_s16le', ac=1, ar=22050)
+        .overwrite_output()
+        .run(quiet=True))
+    except ffmpeg.Error as e:
+        print("FFmpeg error:", e.stderr.decode('utf8'))
+     
 def audio_features(video_file, video_name, df_shots):
     # Explicar isso aqui 
-    (
-        ffmpeg
-        .input(video_file)
-        .output(f'{video_name}.wav', acodec='pcm_s16le', ac=1, ar=22050)
-        .overwrite_output()
-        .run(quiet=True)
-    )
+    save_wav(video_file, video_name)
 
     def analyze_shot_audio(shot_id, start, duration, wav_path='inthemood.wav',
                         frame_length=2048, hop_length=512, n_fft=2048):
@@ -35,7 +39,7 @@ def audio_features(video_file, video_name, df_shots):
         }
 
     audio_feats = pd.DataFrame([
-        dict(**analyze_shot_audio(rid, row.start, row.duration, wav_path=f'{video_name}.wav'))
+        dict(**analyze_shot_audio(rid, row.start, row.duration, wav_path=f'../data/{video_name}.wav'))
         for rid, row in df_shots.iterrows()
     ])
     df_shots = df_shots.merge(audio_feats, on='shot_id')
