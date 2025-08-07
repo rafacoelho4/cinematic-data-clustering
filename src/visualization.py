@@ -1,5 +1,5 @@
 import pandas as pd 
-import matplotlib as plt 
+import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Image related 
@@ -32,19 +32,19 @@ def plot_hue_saturation(color_feats):
     plt.show()
 
 # Audio related 
-def plot_rms_silence(df_shots):
+def plot_rms_silence(df):
     fig, axes = plt.subplots(1, 2, figsize=(18, 4))
 
     # 1. RMS médio vs shot_id
     ax = axes[0]
-    sns.lineplot(x='shot_id', y='rms_mean', data=df_shots, marker='o', ax=ax, color='royalblue')
+    sns.lineplot(x='shot_id', y='rms_mean', data=df, marker='o', ax=ax, color='royalblue')
     ax.set_title('RMS médio por cena'); ax.set_xlabel('Shot ID'); ax.set_ylabel('RMS médio')
 
     # 2. duplo eixo: RMS médio e Silence ratio
     ax = axes[1]
-    sns.lineplot(x='shot_id', y='rms_mean', data=df_shots, marker='o', ax=ax, color='royalblue', label='RMS médio')
+    sns.lineplot(x='shot_id', y='rms_mean', data=df, marker='o', ax=ax, color='royalblue', label='RMS médio')
     ax2 = ax.twinx()
-    sns.lineplot(x='shot_id', y='silence_ratio', data=df_shots, marker='x', ax=ax2, color='orange', label='Silêncio (%)')
+    sns.lineplot(x='shot_id', y='silence_ratio', data=df, marker='x', ax=ax2, color='orange', label='Silêncio (%)')
     ax.set_title('Volume vs Silêncio'); ax.legend(loc='upper left'); ax2.legend(loc='upper right')
     ax.set_xlabel('Shot ID'); ax.set_ylabel('RMS médio'); ax2.set_ylabel('Silêncio')
 
@@ -52,10 +52,10 @@ def plot_rms_silence(df_shots):
     plt.show()
 
 # Movement related 
-def plot_movement(df_shots):
+def plot_movement(df):
     fig, ax = plt.subplots(1, 1, figsize=(18, 4))
 
-    sns.lineplot(x='shot_id', y='flow_mag_mean', data=df_shots, marker='o', ax=ax, color='royalblue')
+    sns.lineplot(x='shot_id', y='flow_mag_mean', data=df, marker='o', ax=ax, color='royalblue')
     ax.set_title('Movimento da cena'); ax.set_xlabel('Cena ID'); ax.set_ylabel('Flow Mag Mean')
     plt.show()
 

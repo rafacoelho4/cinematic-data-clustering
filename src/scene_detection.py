@@ -2,6 +2,7 @@ import pandas as pd
 from scenedetect import VideoManager, SceneManager
 from scenedetect.detectors import ContentDetector
 import os 
+import ffmpeg
 
 def detect_scene(video_file):
     # Inicializa PySceneDetect
@@ -19,11 +20,34 @@ def detect_scene(video_file):
         return pd.DataFrame()
 
     # Monta DataFrame com início, fim e duração de cada shot
-    df_shots = pd.DataFrame([{
+    df = pd.DataFrame([{
         'shot_id': i,
         'start': scene[0].get_seconds(),
         'end': scene[1].get_seconds()
     } for i, scene in enumerate(scene_list)])
-    df_shots['duration'] = df_shots['end'] - df_shots['start']
-    print(f"Total de shots: {len(df_shots)}")
-    return df_shots 
+    df['duration'] = df['end'] - df['start']
+    print(f"Total de shots: {len(df)}")
+    
+    return df 
+
+# Gera um video com menor resolução para acelerar detecção de cenas 
+def detect_scene_low_resolution(video_file):
+
+    # Fazer o seguinte:
+    # Se existir arquivo snippet_lowres.mp4, usar ele para detectar cena 
+    # Se não existir, gravar 
+    
+    video_name = video_file[:-4]
+    # Gera um vídeo a 15 fps e 360 px de altura (largura ajustada automaticamente)
+    try:
+        (ffmpeg
+        .input(f'../data/{video_file}')
+        .filter('fps', fps=15)
+        .filter('scale', -2, 360)
+        .output(f'../data/{video_name}_lowres.mp4')
+        .overwrite_output()
+        .run(quiet=True))
+    except ffmpeg.Error as e:
+        print("FFmpeg error:", e.stderr.decode('utf8'))
+
+    return detect_scene(f'{video_name}_lowres.mp4')
