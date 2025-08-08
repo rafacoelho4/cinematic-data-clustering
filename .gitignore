@@ -14,3 +14,5 @@ data/frames
 # Virtual environment 
 .env 
 .venv 
+
+*.pyc

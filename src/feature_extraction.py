@@ -6,9 +6,9 @@ import os
 import cv2 
 
 # Frame extraction 
-def extract_frame_mid(shot_id, time, video_name, input_path='../data/snippet.wav'):
+def extract_frame_mid(shot_id, time, video_name, input_path='data/snippet.wav'):
     
-    output = f'../data/frames/{video_name[:5]}_{shot_id:03d}_{time:.3f}.jpg'
+    output = f'data/frames/{video_name[:5]}_{shot_id:03d}_{time:.3f}.jpg'
     # Skip extraction if file already exists
     if os.path.exists(output):
         return output
@@ -26,19 +26,23 @@ def extract_frame_mid(shot_id, time, video_name, input_path='../data/snippet.wav
 
 def extract_frames(video_file, df):
     video_name = video_file[:-4]
-    os.makedirs('../data/frames', exist_ok=True)
+    os.makedirs('data/frames', exist_ok=True)
     
     df['frame_path'] = df.apply(lambda row: extract_frame_mid(
         int(row.shot_id),
         (row.start + row.end) / 2,
         video_name,
-        f"../data/{video_file}"
+        f"data/{video_file}"
     ), axis=1)
 
     return df
 
-def compute_hsv_hist_stats(frame_path):
-    img = cv2.imread(frame_path)
+def compute_hsv_hist_stats(frame_path): 
+    img = cv2.imread(frame_path) 
+    if img is None:
+        print(f"Erro ao carregar imagem: {frame_path}")
+        return {}
+
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
     
@@ -95,14 +99,14 @@ def image_features(df):
 def save_wav(video_file):
     video_name = video_file[:-4]
     
-    file_path = f'../data/{video_name}.wav'
+    file_path = f'data/{video_name}.wav'
     if(os.path.exists(file_path)): 
         return 
     else:
         try:
             (ffmpeg
-            .input(f"../data/{video_file}")
-            .output(f'../data/{video_name}.wav', acodec='pcm_s16le', ac=1, ar=22050)
+            .input(f"data/{video_file}")
+            .output(f'data/{video_name}.wav', acodec='pcm_s16le', ac=1, ar=22050)
             .overwrite_output()
             .run(quiet=True))
         except ffmpeg.Error as e:
@@ -115,7 +119,7 @@ def audio_features(video_file, df):
     # Explicar isso aqui 
     save_wav(video_file)
 
-    def analyze_shot_audio(shot_id, start, duration, wav_path='../data/snippet.wav',
+    def analyze_shot_audio(shot_id, start, duration, wav_path='data/snippet.wav',
                         frame_length=2048, hop_length=512, n_fft=2048):
 
         y, sr = librosa.load(wav_path, sr=None, offset=start, duration=duration, mono=True)
@@ -137,7 +141,7 @@ def audio_features(video_file, df):
         }
 
     audio_feats = pd.DataFrame([
-        dict(**analyze_shot_audio(rid, row.start, row.duration, wav_path=f'../data/{video_name}.wav'))
+        dict(**analyze_shot_audio(rid, row.start, row.duration, wav_path=f'data/{video_name}.wav'))
         for rid, row in df.iterrows()
     ])
     df = df.merge(audio_feats, on='shot_id')
@@ -186,7 +190,7 @@ def movement_features(video_file, df):
 
     flow_feats = []
     for _, row in df.iterrows():
-        mag = flow_magnitude_between_frames(f"../data/{video_file}", row.start, row.end)
+        mag = flow_magnitude_between_frames(f"data/{video_file}", row.start, row.end)
         flow_feats.append({'shot_id': row.shot_id, 'flow_mag_mean': mag})
 
     df = df.merge(pd.DataFrame(flow_feats), on='shot_id')
