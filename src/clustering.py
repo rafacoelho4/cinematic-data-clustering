@@ -27,13 +27,13 @@ def silhouette(X_scaled):
     # print(silhouettes) 
     print("Best n_clusters by silhouette score:", silhouettes.index(max(silhouettes)) + start_range)
 
-def clustering(video_name="data/snippet.mp4", n_clusters=4):
+def clustering(df, video_name="data/snippet.mp4", n_clusters=4):
     # 2. Carregar DataFrame com features já extraídas:
     #    Suponha que df_shots contenha columns:
     #    ['shot_id','start','end','duration',
     #     'flow_mag_mean','rms_mean','silence_ratio','hue_mean','sat_mean', ...]
 
-    df = pd.read_csv(f'data/{video_name}.csv')
+    # df = pd.read_csv(f'data/{video_name}.csv')
 
     # 3. Escolher apenas as colunas de features para clustering
     feature_cols = [

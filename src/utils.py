@@ -1,4 +1,16 @@
 import ffmpeg 
+from pathlib import Path
+import os
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+os.chdir(PROJECT_ROOT)
+
+def project_root():
+    return Path(__file__).resolve().parent.parent
+
+def from_root(relative_path):
+    return project_root() / relative_path
 
 def get_video_info(video_file) -> dict:
     """
@@ -32,3 +44,14 @@ def get_video_info(video_file) -> dict:
         'height': height,
         'size_bytes': size_bytes
     }
+
+def cut_scenes(df, min, max):
+    # df_filtered = df[df['Age'] >= 25]
+    # df = df.drop(df[df.score < 50].index)
+
+    # cut_df = df[(df['duration'] > 5) or (df['duration'] > 20)] 
+
+    cut_df = df[df['duration'] > min] 
+    cut_df = cut_df[cut_df['duration'] < max] 
+
+    return cut_df 

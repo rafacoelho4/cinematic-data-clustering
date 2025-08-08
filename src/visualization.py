@@ -1,6 +1,7 @@
 import pandas as pd 
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
 
 def plot_color_features(color_feats):
     plt.figure(figsize=(18, 10))
@@ -46,8 +47,13 @@ def plot_color_features(color_feats):
     plt.subplot(2, 3, 6)
     plt.axis('off') # Hide empty subplot
     
+    os.makedirs("figures", exist_ok=True)
+    plt.savefig("figures/hsv_rgb_values.jpeg")
+
     plt.tight_layout()
     plt.show()
+
+    
 
 # Audio related 
 def plot_rms_silence(df):
