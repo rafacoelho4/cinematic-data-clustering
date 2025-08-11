@@ -14,16 +14,16 @@ Uma análise visual e sonora do clássico filme **In the Mood for Love** (2000),
 - Agrupar cenas com base em suas características utilizando aprendizado não supervisionado (clustering).
 - Visualizar padrões recorrentes na estética e ritmo do filme.
 
-<!-- ---
+---
 
 ## 📂 Estrutura do Projeto
 
-- `data/`: Arquivos de entrada (filme, metadados) e saída (features, clusters).
-- `notebooks/`: Etapas do projeto em notebooks separados.
-- `utils/`: Funções auxiliares para leitura de vídeo, extração de frames, etc.
-- `figures/`: Gráficos usados no projeto e README.
+- `data/`: Arquivos de entrada (filme, metadados, frames). 
+- `notebooks/`: Notebook principal do projeto. 
+- `src/`: Funções auxiliares para leitura de vídeo, extração de frames, extração de atributos, etc.
+- `figures/`: Gráficos usados no projeto.
 - `highlights/`: Vídeos com as cenas agrupadas por clusters.
-- `requirements.txt`: Bibliotecas utilizadas. -->
+- `requirements.txt`: Bibliotecas utilizadas.
 
 ---
 
@@ -40,9 +40,10 @@ Uma análise visual e sonora do clássico filme **In the Mood for Love** (2000),
 
 - O filme foi dividido em ~X cenas.
 - Foram extraídas features como:
-  - `flow_mag_mean`: intensidade média de movimento de câmera
-  - `audio_energy`, `audio_silence`: intensidade e pausas no som
-  - `frame_brightness`, `color_saturation`: análise de imagem
+
+   - `hsv_mean`, `hsv_var`: valor médio e variação para Hue, Saturation e Value. 
+   - `rgb_mean`, `rgb_var`: valor médio e variação para os canais Red, Green e Blue. 
+   
 - As cenas foram agrupadas em 4 clusters principais, destacando diferentes atmosferas visuais e sonoras.
 
 <!-- > 🎥 Um vídeo com cenas agrupadas pode ser visto em [`highlights/top_scenes.mp4`](highlights/top_scenes.mp4) -->

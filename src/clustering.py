@@ -38,8 +38,10 @@ def clustering(df, video_name="data/snippet.mp4", n_clusters=4):
 
     # 1. Escolher apenas as colunas de features para clustering
     feature_cols = [
-        'hue_mean', 'hue_var', 'sat_mean', 'sat_var', 'val_mean',
-        'val_var', 'r_mean', 'r_var', 'g_mean', 'g_var', 'b_mean', 'b_var'
+        'hue_mean', 'sat_mean', 'val_mean', 
+        'hue_var', 'sat_var', 'val_var', 
+        'r_mean', 'g_mean', 'b_mean', 
+        'r_var', 'g_var', 'b_var' 
 
         # 'rms_mean', 'rms_std', 'silence_ratio', 
         # 'flow_mag_mean'

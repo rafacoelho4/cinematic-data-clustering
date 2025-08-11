@@ -60,7 +60,8 @@ def write_video(df,
         return 
 
     # 3) Concatena sem re-encodar
-    list_fp = os.path.join(output_dir, f"list_c{cid}.txt")
+    # list_fp = os.path.join(output_dir, f"list_c{cid}.txt")
+    list_fp =  f"list_c{cid}.txt"
     with open(list_fp, "w") as f:
         for tmp in temp_files:
             f.write(f"file '{tmp}'\n")
