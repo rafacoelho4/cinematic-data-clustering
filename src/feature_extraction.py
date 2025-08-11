@@ -25,6 +25,16 @@ def extract_frame_mid(shot_id, time, video_name, input_path='data/snippet.wav'):
     return output
 
 def extract_frames(video_file, df):
+    """
+    Extrai um frame por cena presente no DataFrame. O frame escolhido é aquele exatamente no meio do tempo da cena. 
+
+    Arugumentos:
+        video_file (string): caminho até arquivo .mp4, do diretório raiz.        
+        df (DataFrame): com coluna obrigatória 'shot_id', 'start' e 'end'. 
+
+    Retorna:
+        DataFrame: incrementado com coluna 'frame_path'.
+    """
     video_name = video_file[:-4]
     os.makedirs('data/frames', exist_ok=True)
     
@@ -88,6 +98,15 @@ def compute_hsv_hist_stats(frame_path):
 
 # Image features 
 def image_features(df):
+    """
+    Analisa uma série de atributos dos frames extraidos de cada cena. 
+
+    Arugumentos:
+        df (DataFrame): com coluna obrigatória 'frame_path'. 
+
+    Retorna:
+        DataFrame: incrementado com atributos de análise de imagem (hsv, rgb...).
+    """
     color_feats = pd.DataFrame([
         dict(shot_id=row.shot_id, **compute_hsv_hist_stats(row.frame_path))
         for _, row in df.iterrows()

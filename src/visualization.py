@@ -53,8 +53,6 @@ def plot_color_features(color_feats):
     plt.tight_layout()
     plt.show()
 
-    
-
 # Audio related 
 def plot_rms_silence(df):
     fig, axes = plt.subplots(1, 2, figsize=(18, 4))

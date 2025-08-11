@@ -19,7 +19,9 @@ def get_video_info(video_file) -> dict:
       - fps (frames por segundo),
       - largura / altura (pixels),
       - tamanho do arquivo (bytes).
-    Usa a API 'ffmpeg.probe', que roda puramente em Python.
+
+    Arugumentos:
+        video_file (string): caminho até arquivo .mp4, do diretório raiz.         
     """
     try:
         info = ffmpeg.probe(f'data/{video_file}') 
@@ -46,10 +48,17 @@ def get_video_info(video_file) -> dict:
     }
 
 def cut_scenes(df, min, max):
-    # df_filtered = df[df['Age'] >= 25]
-    # df = df.drop(df[df.score < 50].index)
+    """
+    Exclui, do DataFrame de cenas, aquelas com duração menor que min e maior que max. 
 
-    # cut_df = df[(df['duration'] > 5) or (df['duration'] > 20)] 
+    Arugumentos:
+        df (DataFrame): com coluna obrigatória 'duration'. 
+        min (int): tempo minimo, em segundos, de duração das cenas a serem mantidas. 
+        max (int): tempo máximo, em segundos, de duração das cenas a serem mantidas. 
+
+    Retorna:
+        DataFrame: cenas que estão dentro do intervalo de duração desejada.
+    """
 
     cut_df = df[df['duration'] > min] 
     cut_df = cut_df[cut_df['duration'] < max] 

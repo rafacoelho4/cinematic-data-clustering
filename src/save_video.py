@@ -81,7 +81,7 @@ def write_video(df,
 
 def write_top2_cluster_videos(
     df,
-    video_file,               # caminho relativo ou absoluto para o vídeo (ex: "data/inthemood.mp4")
+    video_file, 
     output_dir="data/highlight",
     fps=10,
     resize_factor=0.5,

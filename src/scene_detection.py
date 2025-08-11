@@ -32,6 +32,16 @@ def detect_scene(video_file):
 
 # Gera um video com menor resolução para acelerar detecção de cenas 
 def detect_scene_low_resolution(video_file):
+    """
+    Detecta as cenas de um filme/video. Utiliza o vídeo em menor resolução para acelerar processo. 
+    Se vídeo em menor resolução não existe, ele é gravado primeiro e depois são detectadas as cenas. 
+
+    Arugumentos:
+        video_file (string): caminho até arquivo .mp4, do diretório raiz. 
+
+    Retorna:
+        DataFrame: colunas 'shot_id', 'start', 'end' e 'duration'.
+    """
 
     video_name = video_file[:-4] 
     # Verifica se ja existe video de menor resolução. Se sim, usar para detectar as cenas
