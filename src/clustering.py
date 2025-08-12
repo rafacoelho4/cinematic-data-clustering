@@ -1,9 +1,11 @@
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, DBSCAN
 from sklearn.metrics import silhouette_score
 
 import umap.umap_ as umap
+
+import matplotlib.pyplot as plt 
 
 def silhouette(X_scaled):
     """
@@ -32,11 +34,9 @@ def silhouette(X_scaled):
     # print(silhouettes) 
     print("Best n_clusters by silhouette score:", silhouettes.index(max(silhouettes)) + start_range)
 
-def clustering(df, video_name="data/snippet.mp4", n_clusters=4):
+def clustering(df, video_name="data/snippet.mp4", method="kmeans", n_clusters=4):
 
-    # df = pd.read_csv(f'data/{video_name}.csv')
-
-    # 1. Escolher apenas as colunas de features para clustering
+    # 1. Escolher apenas as colunas de features para clustering 
     feature_cols = [
         'hue_mean', 'sat_mean', 'val_mean', 
         'hue_var', 'sat_var', 'val_var', 
@@ -63,9 +63,39 @@ def clustering(df, video_name="data/snippet.mp4", n_clusters=4):
     emb_umap = reducer.fit_transform(X_scaled)
     df['umap1'], df['umap2'] = emb_umap[:,0], emb_umap[:,1]
 
-    # 4. Clustering (K-Means)
+    if(method == "kmeans"): 
+        return kmeans_clustering(df, X_scaled, n_clusters) 
+    elif(method == "dbscan"): 
+        return dbscan_clustering(df, X_scaled) 
+    else: 
+        return kmeans_clustering(df, X_scaled, n_clusters) 
+
+    # Plotting the clusters
+    # fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+
+    # K-means plot
+    # ax1.scatter(df['pca1'], df['pca2'], c=kmeans_labels, cmap='viridis')
+    # ax1.set_title('K-means Clustering')
+
+    # DBSCAN plot
+    # ax2.scatter(df['pca1'], df['pca2'], c=dbscan_labels, cmap='viridis')
+    # ax2.set_title('DBSCAN Clustering')
+
+    # plt.show()
+
+    return df 
+
+def kmeans_clustering(df, X_scaled, n_clusters):
+
     kmeans = KMeans(n_clusters=n_clusters, random_state=42)
     df['cluster'] = kmeans.fit_predict(X_scaled)
 
-    # silhouette(X_scaled)
+    return df 
+
+def dbscan_clustering(df, X_scaled): 
+    dbscan = DBSCAN(eps=0.5, min_samples=5)
+
+    df['cluster'] = dbscan.fit_predict(X_scaled)
+    df['cluster'] = df['cluster'] + 1
+
     return df 
