@@ -79,6 +79,23 @@ def write_video(df,
 
     print(f"Vídeo salvo em: {out_fp}")
 
+def write_all_clusters(
+    df,
+    video_file, 
+    output_dir="data/highlight",
+    fps=10,
+    resize_factor=0.5,
+    bitrate="500k"):
+
+    video_path = os.path.abspath(video_file)
+    if not os.path.isfile(video_path):
+        raise FileNotFoundError(f"Vídeo não encontrado em {video_path}")
+
+    output_dir = os.path.abspath(output_dir)
+    os.makedirs(output_dir, exist_ok=True)
+
+    for cid in df['cluster'].value_counts().index.tolist():
+        write_video(df, video_file, cid)
 
 def write_top2_cluster_videos(
     df,
