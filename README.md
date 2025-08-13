@@ -9,8 +9,9 @@ Uma análise visual e sonora do clássico filme **In the Mood for Love** (2000),
 ## 📌 Objetivos
 
 - Extrair automaticamente as cenas do filme.
-- Analisar atributos visuais (cor, movimento, brilho) e sonoros (energia, silêncio)
-- Detectar magnitude de movimento de câmera ao longo do filme.
+<!-- - Analisar atributos visuais (cor, movimento, brilho) e sonoros (energia, silêncio) -->
+- Analisar atributos visuais de cor como brilho, saturação e valores RGB. 
+<!-- - Detectar magnitude de movimento de câmera ao longo do filme. -->
 - Agrupar cenas com base em suas características utilizando aprendizado não supervisionado (clustering).
 - Visualizar padrões recorrentes na estética e ritmo do filme.
 
@@ -29,8 +30,10 @@ Uma análise visual e sonora do clássico filme **In the Mood for Love** (2000),
 
 ## 🧠 Técnicas Utilizadas
 
-- **OpenCV**: Extração de frames e cálculo de movimento óptico (Farneback).
-- **librosa**: Análise de energia e silêncio no áudio.
+<!-- - **OpenCV**: Extração de frames e cálculo de movimento óptico (Farneback). -->
+<!-- - **librosa**: Análise de energia e silêncio no áudio. -->
+- **OpenCV**: Extração de frames e processamento de imagens.
+- **scenedetect**: Detecção de cenas em um víde. 
 - **Scikit-learn**: Normalização, clustering com KMeans, PCA para visualização.
 - **Matplotlib** / **Plotly**: Visualizações dos atributos e agrupamentos.
 
@@ -38,7 +41,7 @@ Uma análise visual e sonora do clássico filme **In the Mood for Love** (2000),
 
 ## 📊 Resultados
 
-- O filme foi dividido em ~X cenas.
+- O filme inteiro foi dividido em 461 cenas.
 - Foram extraídas features como:
 
    - `hsv_mean`, `hsv_var`: valor médio e variação para Hue, Saturation e Value. 
