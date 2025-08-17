@@ -2,30 +2,19 @@
 
 Uma análise visual e sonora do clássico filme **In the Mood for Love** (2000), de Wong Kar-Wai. O projeto combina técnicas de visão computacional e ciência de dados para agrupar cenas por similaridade, destacando a cinematografia nostálgica e melancólica do diretor. 
 
-<img src="movie_banner.jpg" width="90%" alt="Scene from movie In the Mood for Love (2000)">
+<img src="movie_banner.jpg" width="100%" alt="Scene from movie In the Mood for Love (2000)">
 
 ---
 
 ## 📌 Objetivos
 
 - Extrair automaticamente as cenas do filme.
-<!-- - Analisar atributos visuais (cor, movimento, brilho) e sonoros (energia, silêncio) -->
 - Analisar atributos visuais de cor como brilho, saturação e valores RGB. 
-<!-- - Detectar magnitude de movimento de câmera ao longo do filme. -->
 - Agrupar cenas com base em suas características utilizando aprendizado não supervisionado (clustering).
 - Visualizar padrões recorrentes na estética e ritmo do filme.
 
----
-
-## 📂 Estrutura do Projeto
-
-- `data/`: Arquivos de entrada (filme, metadados, frames). 
-- `notebooks/`: Notebook principal do projeto. 
-- `src/`: Funções auxiliares para leitura de vídeo, extração de frames, extração de atributos, etc.
-- `figures/`: Gráficos usados no projeto.
-- `highlights/`: Vídeos com as cenas agrupadas por clusters.
-- `requirements.txt`: Bibliotecas utilizadas.
-
+<!-- - Analisar atributos visuais (cor, movimento, brilho) e sonoros (energia, silêncio) -->
+<!-- - Detectar magnitude de movimento de câmera ao longo do filme. -->
 ---
 
 ## 🧠 Técnicas Utilizadas
@@ -41,8 +30,7 @@ Uma análise visual e sonora do clássico filme **In the Mood for Love** (2000),
 
 ## 📊 Resultados
 
-- O filme inteiro foi dividido em 461 cenas.
-- Foram extraídas features como:
+- O filme inteiro foi dividido em 461 cenas. Foram extraídas features como:
 
    - `hsv_mean`, `hsv_var`: valor médio e variação para Hue, Saturation e Value. 
    - `rgb_mean`, `rgb_var`: valor médio e variação para os canais Red, Green e Blue. 
@@ -50,6 +38,23 @@ Uma análise visual e sonora do clássico filme **In the Mood for Love** (2000),
 - As cenas foram agrupadas em 4 clusters principais, destacando diferentes atmosferas visuais e sonoras.
 
 <!-- > 🎥 Um vídeo com cenas agrupadas pode ser visto em [`highlights/top_scenes.mp4`](highlights/top_scenes.mp4) -->
+
+- O gráfico abaixo apresenta a distribuição dos valores de Hue, Saturation e Value (HSV), assim como valores dos canais RGB.
+
+<img src="figures/hsv_rgb_values.jpeg" width="100%" alt="HSV and RGB distributions"> 
+
+Os valores de matiz (Hue) concentrados no valor 30° dizem respeito ao tom avermelhado e alaranjado predominante no filme. Uma alta saturação é encontrada no filme, revelando seu aspecto nostálgico e vibrante. O gráfico de valor, ou brilho, se concentra em valores menores, pelas cenas mais escuras do filme. 
+
+---
+
+## 📂 Estrutura do Projeto
+
+- `data/`: Arquivos de entrada (filme, metadados, frames). 
+- `notebooks/`: Notebook principal do projeto. 
+- `src/`: Funções auxiliares para leitura de vídeo, extração de frames, extração de atributos, etc.
+- `figures/`: Gráficos usados no projeto.
+- `highlights/`: Vídeos com as cenas agrupadas por clusters.
+- `requirements.txt`: Bibliotecas utilizadas.
 
 ---
 
@@ -66,13 +71,15 @@ Uma análise visual e sonora do clássico filme **In the Mood for Love** (2000),
    pip install -r requirements.txt 
 ```
 
-3. Execute os notebooks na ordem abaixo:
+3. Execute o notebook:
 
+- notebooks/demo.ipynb
+<!--
 - 01_scene_detection.ipynb: Divide o filme em cenas
-- 02_feature_extraction.ipynb: Extrai atributos de vídeo e som
+- 02_feature_extraction.ipynb: Extrai atributos de vídeo
 - 03_clustering.ipynb: Aplica PCA/UMAP e KMeans
 - 04_visualization.ipynb: Gera gráficos e salva cenas agrupadas
-
+-->
 --- 
 
 ## 🔮 Possíveis Extensões
